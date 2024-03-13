@@ -1,44 +1,133 @@
+import { ConfigService } from '@nestjs/config';
+import * as dotenv from 'dotenv';
 import { WinstonModule, utilities } from 'nest-winston';
 import * as winston from 'winston';
 import * as winstonDaily from 'winston-daily-rotate-file';
 
-const dailyOption = (level: string) => {
+//const configService = app.get(ConfigService);
+// const port = ConfigService.get<int>('PORT');
+
+const dailyOption = (appName: string, level: string) => {
   return {
     level,
     datePattern: 'YYYY-MM-DD',
     // dirname: `./logs/${level}`,
     // filename: `logs/%DATE%.${level}.log`,
-    filename: `logs/%DATE%.log`,
+    filename: `logs/${appName}.%DATE%.log`,
     maxFiles: 30,
     zippedArchive: false,
     format: winston.format.combine(
-      winston.format.timestamp(),
-      utilities.format.nestLike(process.env.NODE_ENV, {
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss',
+      }),
+      winston.format.errors({ stack: false }),
+      // winston.format.cli(),
+      // winston.format.splat(),
+      // winston.format.timestamp(),
+      // winston.format.uncolorize(),
+      // winston.format.printf((info) => {
+      //   return `[${info.timestamp}][${info.level}] ${info.message}`;
+      // }),
+      utilities.format.nestLike(appName, {
         colors: false,
         prettyPrint: true,
       }),
     ),
+
+    // format: winston.format.combine(
+    //   winston.format.timestamp(),
+    //   utilities.format.nestLike(process.env.NODE_ENV, {
+    //     colors: false,
+    //     prettyPrint: true,
+    //   }),
+    // ),
   };
 };
 
-export const winstonLogger = WinstonModule.createLogger({
-  transports: [
-    new winston.transports.Console({
-      level: process.env.NODE_ENV === 'production' ? 'http' : 'debug',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        utilities.format.nestLike(process.env.NODE_ENV, {
-          colors: true,
-          prettyPrint: true,
-        }),
-      ),
-    }),
-    new winstonDaily(dailyOption('info')),
-    new winstonDaily(dailyOption('debug')),
-    new winstonDaily(dailyOption('warn')),
-    new winstonDaily(dailyOption('error')),
-  ],
-});
+// export const winstonLogger = WinstonModule.createLogger({
+//   transports: [
+//     new winstonDaily({
+//       filename: `logs/${'appName'}.%DATE%.log`,
+//       maxFiles: 30,
+//       zippedArchive: false,
+//       maxSize: '20m',
+//       format: winston.format.combine(
+//         winston.format.timestamp({
+//           format: 'YYYY-MM-DD HH:mm:ss',
+//         }),
+//         winston.format.errors({ stack: false }),
+//         // winston.format.cli(),
+//         // winston.format.splat(),
+//         // winston.format.timestamp(),
+//         // winston.format.uncolorize(),
+//         // winston.format.printf((info) => {
+//         //   return `[${info.timestamp}][${info.level}] ${info.message}`;
+//         // }),
+//         utilities.format.nestLike('appName', {
+//           colors: false,
+//           prettyPrint: true,
+//         }),
+//       ),
+//     }),
+//     new winston.transports.Console({
+//       level: 'info',
+//       format: winston.format.combine(
+//         winston.format.timestamp(),
+//         utilities.format.nestLike(process.env.APP_NAME, {
+//           colors: true,
+//           prettyPrint: true,
+//         }),
+//       ),
+//     }),
+//     // new winstonDaily(dailyOption('info')),
+//     // new winstonDaily(dailyOption('', 'debug')),
+//     // new winstonDaily(dailyOption('', 'warn')),
+//     // new winstonDaily(dailyOption('', 'error')),
+//   ],
+// });
+
+// https://malgogi-developer.tistory.com/26
+// https://lsmod.medium.com/nestjs-setting-up-file-logging-daily-rotation-with-winston-28147af56ec4
+
+export const winstonLogger = (appName: string) => {
+  return WinstonModule.createLogger({
+    level: 'silly',
+    transports: [
+      new winstonDaily({
+        filename: `logs/${appName}.%DATE%.log`,
+        maxFiles: 30,
+        zippedArchive: false,
+        maxSize: '20m',
+        format: winston.format.combine(
+          winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss',
+          }),
+          winston.format.errors({ stack: true }),
+          winston.format.splat(),
+          winston.format.printf((info) => {
+            var infoString = info.level.toUpperCase().padEnd(5);
+            var stackString = info.stack ? info.stack : '';
+
+            return `[${info.timestamp}][${infoString}][${info.splat}] ${info.message} - ${stackString}`;
+          }),
+          // utilities.format.nestLike(appName, {
+          //   colors: false,
+          //   prettyPrint: true,
+          // }),
+        ),
+      }),
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          utilities.format.nestLike(appName, {
+            colors: true,
+            prettyPrint: true,
+          }),
+        ),
+      }),
+    ],
+  });
+};
 
 //   logger: WinstonModule.createLogger({
 //     transports: [

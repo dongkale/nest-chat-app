@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 // import { WinstonModule } from 'nest-winston';
 // import { transports, format } from 'winston';
 // import 'winston-daily-rotate-file';
+import * as dotenv from 'dotenv';
 
 import { winstonLogger } from './common/logger/winston.util';
 
@@ -64,8 +65,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
     cors: true,
-    logger: winstonLogger,
+    logger: winstonLogger('MyApp'),
   });
+
+  dotenv.config();
 
   await app.listen(3000);
 }

@@ -32,9 +32,14 @@ export class AppController {
   @Get('world')
   getWorld(): string {
     this.logger.log('Calling getWorld()', AppController.name);
-    // this.logger.warn('Calling getWorld()', AppController.name);
-    // this.logger.debug('Calling getWorld()', AppController.name);
-    // this.logger.error('Calling getWorld()', AppController.name);
+    this.logger.debug('Calling getWorld()', AppController.name);
+    this.logger.warn('Calling getWorld()', AppController.name);
+
+    try {
+      throw new Error();
+    } catch (e) {
+      this.logger.error('Calling getWorld()', e.stack, AppController.name);
+    }
 
     return this.appService.getWorld();
   }

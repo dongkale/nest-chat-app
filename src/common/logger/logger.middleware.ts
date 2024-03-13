@@ -1,9 +1,12 @@
+import { Logger } from '@nestjs/common';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { winstonLogger } from './winston.util';
+// import { winstonLogger } from './winston.util';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
+  private readonly logger = new Logger(LoggerMiddleware.name);
+
   constructor() {}
 
   use(req: Request, res: Response, next: NextFunction) {
@@ -14,11 +17,15 @@ export class LoggerMiddleware implements NestMiddleware {
       const { statusCode } = res;
 
       if (statusCode >= 400 && statusCode < 500)
-        winstonLogger.warn(
+        // winstonLogger.warn(
+        //   `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
+        // );
+        this.logger.warn(
           `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
         );
       else if (statusCode >= 500)
-        winstonLogger.error(
+        // winstonLogger.error(
+        this.logger.error(
           `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
         );
     });
