@@ -88,6 +88,7 @@ const dailyOption = (appName: string, level: string) => {
 
 // https://malgogi-developer.tistory.com/26
 // https://lsmod.medium.com/nestjs-setting-up-file-logging-daily-rotation-with-winston-28147af56ec4
+// https://timothy.hashnode.dev/advance-your-nestjs-application-with-winston-logger-a-step-by-step-guide
 
 export const winstonLogger = (appName: string) => {
   return WinstonModule.createLogger({
@@ -104,16 +105,16 @@ export const winstonLogger = (appName: string) => {
           }),
           winston.format.errors({ stack: true }),
           winston.format.splat(),
-          winston.format.printf((info) => {
-            var infoString = info.level.toUpperCase().padEnd(5);
-            var stackString = info.stack ? info.stack : '';
+          // winston.format.printf((info) => {
+          //   var infoString = info.level.toUpperCase().padEnd(5);
+          //   var stackString = info.stack ? info.stack : '';
 
-            return `[${info.timestamp}][${infoString}][${info.splat}] ${info.message} - ${stackString}`;
-          }),
-          // utilities.format.nestLike(appName, {
-          //   colors: false,
-          //   prettyPrint: true,
+          //   return `[${info.timestamp}][${infoString}][${info.splat}] ${info.message} - ${stackString}`;
           // }),
+          utilities.format.nestLike(appName, {
+            colors: false,
+            prettyPrint: true,
+          }),
         ),
       }),
       new winston.transports.Console({
