@@ -45,4 +45,5 @@ npm i --save @nestjs/typeorm typeorm mysql2
 ```bash
 https://docs.nestjs.com/websockets/gateways
 https://gist.github.com/transitive-bullshit/39a7edc77c422cbf8a18
+https://docs.nestjs.com/controllers
 ```
