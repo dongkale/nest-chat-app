@@ -7,6 +7,7 @@ import * as winstonDaily from 'winston-daily-rotate-file';
 //const configService = app.get(ConfigService);
 // const port = ConfigService.get<int>('PORT');
 
+/*
 const dailyOption = (appName: string, level: string) => {
   return {
     level,
@@ -43,6 +44,7 @@ const dailyOption = (appName: string, level: string) => {
     // ),
   };
 };
+*/
 
 // export const winstonLogger = WinstonModule.createLogger({
 //   transports: [
@@ -90,6 +92,25 @@ const dailyOption = (appName: string, level: string) => {
 // https://lsmod.medium.com/nestjs-setting-up-file-logging-daily-rotation-with-winston-28147af56ec4
 // https://timothy.hashnode.dev/advance-your-nestjs-application-with-winston-logger-a-step-by-step-guide
 
+/*
+function getCaller() {
+  let err;
+  try {
+    throw Error('');
+  } catch (e) {
+    err = e;
+  }
+  const pattern = /\s*at (Object.)?(silly|debug|verbose|info|warn|error) /;
+  const callerLine = err.stack
+    .split('\n')
+    .filter((line) => pattern.test(line))[0];
+  if (!callerLine) {
+    return '';
+  }
+  return callerLine.replace(pattern, '').replace(/^\(|\)$/g, '');
+}
+*/
+
 export const winstonLogger = (appName: string) => {
   return WinstonModule.createLogger({
     level: 'silly',
@@ -106,15 +127,27 @@ export const winstonLogger = (appName: string) => {
           winston.format.errors({ stack: true }),
           winston.format.splat(),
           // winston.format.printf((info) => {
-          //   var infoString = info.level.toUpperCase().padEnd(5);
-          //   var stackString = info.stack ? info.stack : '';
+          //   const { timestamp, level, message, ...args } = info;
+          //   const callModule = args.context ? args.context : '';
 
-          //   return `[${info.timestamp}][${infoString}][${info.splat}] ${info.message} - ${stackString}`;
+          //   const ts = timestamp.slice(0, 19).replace('T', ' ');
+          //   return `${ts} [${level}]: ${message} ${
+          //     Object.keys(args).length ? JSON.stringify(args, null, 2) : ''
+          //   }`;
           // }),
-          utilities.format.nestLike(appName, {
-            colors: false,
-            prettyPrint: true,
+          winston.format.printf((info) => {
+            const { timestamp, level, message, stack, ...args } = info;
+
+            const levelString = level.toUpperCase().padEnd(5);
+            const stackString = stack ? '- ' + stack : '';
+            const callModule = args.context ? '[' + args.context + ']' : '';
+
+            return `[${timestamp}][${levelString}]${callModule} ${message} ${stackString}`;
           }),
+          // utilities.format.nestLike(appName, {
+          //   colors: false,
+          //   prettyPrint: true,
+          // }),
         ),
       }),
       new winston.transports.Console({

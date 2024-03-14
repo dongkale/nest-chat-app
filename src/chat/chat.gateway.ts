@@ -10,7 +10,7 @@ import {
 
 import { Server } from 'socket.io';
 
-@WebSocketGateway(3030, { namespce: 'chat' })
+@WebSocketGateway(3030, { namespace: 'chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
