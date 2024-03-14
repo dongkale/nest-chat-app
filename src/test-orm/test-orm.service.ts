@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestOrm } from './test-orm.entity';
-import { Repository, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TestOrmService {
@@ -58,6 +58,18 @@ export class TestOrmService {
       //     })
       //     .where('id = :id', { id: id })
       //     .execute();
+
+      //
     }
+  }
+
+  async query__(): Promise<void> {
+    await this.testOrmRepository.query(
+      `UPDATE test_orm SET version = '===' WHERE id=2`,
+    );
+
+    const s = await this.testOrmRepository.query(`SELECT * FROM test_orm`);
+
+    return;
   }
 }

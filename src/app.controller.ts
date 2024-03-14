@@ -2,6 +2,7 @@ import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigService } from '@nestjs/config';
 import { AppDB } from './appDB.entity';
+import { TestOrmService } from './test-orm/test-orm.service';
 
 @Controller('/')
 export class AppController {
@@ -10,6 +11,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly configService: ConfigService,
+    private testOrmService: TestOrmService,
   ) {}
 
   @Get()
@@ -83,5 +85,10 @@ export class AppController {
   @Get('findOne/:id')
   async findOne(@Param('id') id: number): Promise<AppDB> {
     return await this.appService.findOne(id);
+  }
+
+  @Get('query')
+  query() {
+    return this.testOrmService.query__();
   }
 }

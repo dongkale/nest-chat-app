@@ -11,6 +11,7 @@ import { TestOrmModule } from './test-orm/test-orm.module';
 // import { TestOrmController } from './test-orm/test-orm.controller';
 import { TestOrm } from './test-orm/test-orm.entity';
 import * as dotenv from 'dotenv';
+import { TestOrmService } from './test-orm/test-orm.service';
 
 dotenv.config();
 
@@ -34,7 +35,7 @@ dotenv.config();
     TestOrmModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway, Logger],
+  providers: [AppService, TestOrmService, ChatGateway, Logger],
 })
 export class AppModule {
   // let's add a middleware on all routes

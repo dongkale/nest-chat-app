@@ -41,4 +41,9 @@ export class TestOrmController {
   update(@Param('id') id: number, @Body() testOrm: TestOrm) {
     this.testOrmService.update(id, testOrm);
   }
+
+  @Get('query')
+  query() {
+    return this.testOrmService.query__();
+  }
 }
