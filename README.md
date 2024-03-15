@@ -34,10 +34,14 @@ $ npm run test:cov
 
 ```bash
 npm i --save @nestjs/websockets @nestjs/platform-socket.io
+
 npm i --save-dev dotenv
+
 npm i --save @nestjs/config
 
 npm i --save @nestjs/typeorm typeorm mysql2
+
+npm i --save @nestjs/cli
 
 # transaction
 npm install --save typeorm-transactional
