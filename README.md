@@ -64,4 +64,6 @@ https://dev.to/jfrancai/building-a-real-time-chat-gateway-with-nestjs-testing-we
 https://docs.nestjs.com/websockets/gateways
 https://gist.github.com/transitive-bullshit/39a7edc77c422cbf8a18
 https://docs.nestjs.com/controllers
+
+https://github.com/gorilla/websocket/blob/main/examples/echo/client.go
 ```
