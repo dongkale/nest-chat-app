@@ -6,11 +6,14 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  MessageBody,
 } from '@nestjs/websockets';
 
 import { Server } from 'socket.io';
 
-@WebSocketGateway(3030, { namespace: 'chat' })
+import { AddMessageDto } from './dto/add-message.dto';
+
+@WebSocketGateway(3030)
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -41,5 +44,12 @@ export class ChatGateway
       event: 'pong',
       data,
     };
+  }
+
+  @SubscribeMessage('chat')
+  handleChatMessage(@MessageBody() payload: AddMessageDto): AddMessageDto {
+    this.logger.log(`Message received: ${payload.author} - ${payload.body}`);
+    this.io.emit('chat', payload);
+    return payload;
   }
 }

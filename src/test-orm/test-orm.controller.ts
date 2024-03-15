@@ -42,8 +42,9 @@ export class TestOrmController {
     this.testOrmService.update(id, testOrm);
   }
 
+  // @Get(':id') 와 겹치므로 이름 변경하여 테스트
   @Get('query')
-  query() {
+  async query(): Promise<TestOrm> {
     return this.testOrmService.query__();
   }
 }

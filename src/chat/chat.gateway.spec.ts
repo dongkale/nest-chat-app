@@ -2,9 +2,17 @@ import { Test } from '@nestjs/testing';
 import { ChatGateway } from './chat.gateway';
 import { INestApplication } from '@nestjs/common';
 import { Socket, io } from 'socket.io-client';
+import { AppModule } from '../app.module';
+import {
+  initializeTransactionalContext,
+  StorageDriver,
+} from 'typeorm-transactional';
 
 async function createNestApp(...gateways: any): Promise<INestApplication> {
+  // initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
+
   const testingModule = await Test.createTestingModule({
+    // imports: [AppModule],
     providers: gateways,
   }).compile();
   return testingModule.createNestApplication();
@@ -22,7 +30,7 @@ describe('ChatGateway', () => {
     gateway = app.get<ChatGateway>(ChatGateway);
     // Create a new client that will interact with the gateway
     ioClient = io('http://localhost:3030', {
-      autoConnect: false,
+      autoConnect: true,
       transports: ['websocket', 'polling'],
     });
 
@@ -39,13 +47,14 @@ describe('ChatGateway', () => {
 
   it('should emit "pong" on "ping"', async () => {
     ioClient.connect();
-    ioClient.emit('ping', 'Hello !');
+    ioClient.emit('ping', 'Hello world!');
     await new Promise<void>((resolve) => {
       ioClient.on('connect', () => {
         console.log('connected');
       });
       ioClient.on('pong', (data) => {
-        expect(data).toBe('Hello !');
+        expect(data).toBe('Hello world!');
+        console.log(`=== ${data}`);
         resolve();
       });
     });

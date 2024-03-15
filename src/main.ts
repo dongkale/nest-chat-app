@@ -2,13 +2,14 @@ import { NestFactory } from '@nestjs/core';
 // import { WinstonModule } from 'nest-winston';
 // import { transports, format } from 'winston';
 // import 'winston-daily-rotate-file';
-import * as dotenv from 'dotenv';
-
+// import * as dotenv from 'dotenv';
 import { winstonLogger } from './common/logger/winston.util';
-
 import { AppModule } from './app.module';
-
 import 'winston-daily-rotate-file';
+import {
+  initializeTransactionalContext,
+  StorageDriver,
+} from 'typeorm-transactional';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule, {
@@ -63,12 +64,12 @@ async function bootstrap() {
   //   }),
   // });
 
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
+
   const app = await NestFactory.create(AppModule, {
     cors: true,
     logger: winstonLogger('MyApp'),
   });
-
-  dotenv.config();
 
   await app.listen(3000);
 }

@@ -1,7 +1,6 @@
 import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigService } from '@nestjs/config';
-import { AppDB } from './appDB.entity';
 import { TestOrmService } from './test-orm/test-orm.service';
 
 @Controller('/')
@@ -53,39 +52,39 @@ export class AppController {
     return this.appService.getTest(arg);
   }
 
-  @Get('data')
-  async getData(): Promise<AppDB[]> {
-    this.logger.log('Calling getData()');
+  // @Get('data')
+  // async getData(): Promise<AppDB[]> {
+  //   this.logger.log('Calling getData()');
 
-    const v = await this.appService.findAll();
-    // v.for
+  //   const v = await this.appService.findAll();
+  //   // v.for
 
-    v.forEach((e: AppDB) => {
-      this.logger.log(`id: ${e.id} name: ${e.name}`);
-    });
+  //   v.forEach((e: AppDB) => {
+  //     this.logger.log(`id: ${e.id} name: ${e.name}`);
+  //   });
 
-    return await this.appService.findAll();
+  //   return await this.appService.findAll();
 
-    // json 형태로 변환
-    // return await v.then((e: AppDB[]) => {
-    //   return JSON.stringify(e);
-    // });
-    // const v2 = (await v).forEach((e: AppDB) => {  // forEach는 return이 없음.
-    //   this.logger.log(e.id);
-    // }
+  //   // json 형태로 변환
+  //   // return await v.then((e: AppDB[]) => {
+  //   //   return JSON.stringify(e);
+  //   // });
+  //   // const v2 = (await v).forEach((e: AppDB) => {  // forEach는 return이 없음.
+  //   //   this.logger.log(e.id);
+  //   // }
 
-    // return (await v).toString();
-  }
+  //   // return (await v).toString();
+  // }
 
-  @Get('findAll')
-  async findAll(): Promise<AppDB[]> {
-    return await this.appService.findAll();
-  }
+  // @Get('findAll')
+  // async findAll(): Promise<AppDB[]> {
+  //   return await this.appService.findAll();
+  // }
 
-  @Get('findOne/:id')
-  async findOne(@Param('id') id: number): Promise<AppDB> {
-    return await this.appService.findOne(id);
-  }
+  // @Get('findOne/:id')
+  // async findOne(@Param('id') id: number): Promise<AppDB> {
+  //   return await this.appService.findOne(id);
+  // }
 
   @Get('query')
   query() {

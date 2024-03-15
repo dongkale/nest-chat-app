@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm'; // entity에 query날리는건 repository임.
-import { AppDB } from './appDB.entity';
+// import { AppDB } from './appDB.entity';
 
 @Injectable()
 export class AppService {
@@ -9,22 +9,19 @@ export class AppService {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   // @InjectRepository(AppDB) private appDBRepository: Repository<AppDB>,
-  constructor(
-    @InjectRepository(AppDB)
-    private appDBRepository: Repository<AppDB>,
-  ) {}
+  constructor() {}
 
-  findAll(): Promise<AppDB[]> {
-    return this.appDBRepository.find();
-  }
+  // findAll(): Promise<AppDB[]> {
+  //   return this.appDBRepository.find();
+  // }
 
-  findOne(id: number): Promise<AppDB> {
-    return this.appDBRepository
-      .find({
-        where: [{ id: id }],
-      })
-      .then((result) => result[0]);
-  }
+  // findOne(id: number): Promise<AppDB> {
+  //   return this.appDBRepository
+  //     .find({
+  //       where: [{ id: id }],
+  //     })
+  //     .then((result) => result[0]);
+  // }
 
   getHome(): string {
     this.logger.log('Service getHome()');
@@ -47,11 +44,11 @@ export class AppService {
     return 'Test...! ' + arg;
   }
 
-  async getData(): Promise<AppDB[]> {
-    this.logger.log('Service getData()');
+  // async getData(): Promise<AppDB[]> {
+  //   this.logger.log('Service getData()');
 
-    // const v = ;
-    // const v = '';
-    return this.findAll();
-  }
+  //   // const v = ;
+  //   // const v = '';
+  //   return this.findAll();
+  // }
 }

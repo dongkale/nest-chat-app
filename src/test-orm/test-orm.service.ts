@@ -1,13 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestOrm } from './test-orm.entity';
+import { Chat } from '../chat/chat.entity';
 import { Repository } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
+import { ChatService } from '../chat/chat.service';
+// import { AppDB } from '../appDB.entity';
 
 @Injectable()
 export class TestOrmService {
   constructor(
     @InjectRepository(TestOrm)
     private testOrmRepository: Repository<TestOrm>,
+    @InjectRepository(Chat)
+    private chatRepository: Repository<Chat>,
+    private chatService: ChatService,
   ) {}
 
   findAll(): Promise<TestOrm[]> {
@@ -63,13 +70,32 @@ export class TestOrmService {
     }
   }
 
-  async query__(): Promise<void> {
+  @Transactional()
+  async query__(): Promise<TestOrm> {
+    // 같은 리포지토리에서 트랜젝션
     await this.testOrmRepository.query(
       `UPDATE test_orm SET version = '===' WHERE id=2`,
     );
 
+    // throw new Error();
+
+    await this.testOrmRepository.query(
+      `UPDATE test_orm SET version = '=====' WHERE id=1`,
+    );
+
     const s = await this.testOrmRepository.query(`SELECT * FROM test_orm`);
 
-    return;
+    // 다른 리포지토리에서 트랜젝션
+    await this.testOrmRepository.query(
+      `UPDATE test_orm SET version = '+++' WHERE id=1`,
+    );
+
+    throw new Error();
+
+    await this.chatRepository.query(
+      `UPDATE chat SET message = '+++' WHERE id=1`,
+    );
+
+    return s[1];
   }
 }

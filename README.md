@@ -38,11 +38,25 @@ npm i --save-dev dotenv
 npm i --save @nestjs/config
 
 npm i --save @nestjs/typeorm typeorm mysql2
+
+# transaction
+npm install --save typeorm-transactional
+## Needed dependencies
+npm install --save typeorm reflect-metadata
+```
+
+# Command
+
+```bash
+nest g mo
+nest g co
+nest g s
 ```
 
 # doc
 
 ```bash
+https://dev.to/jfrancai/building-a-real-time-chat-gateway-with-nestjs-testing-websocket-features-and-implementing-simple-private-messaging-467l
 https://docs.nestjs.com/websockets/gateways
 https://gist.github.com/transitive-bullshit/39a7edc77c422cbf8a18
 https://docs.nestjs.com/controllers

@@ -1,29 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TestOrmController } from './test-orm.controller';
+import { ChatService } from './chat.service';
 import { AppModule } from '../app.module';
 import {
   initializeTransactionalContext,
   StorageDriver,
 } from 'typeorm-transactional';
 
-describe('TestOrmController', () => {
-  let controller: TestOrmController;
+describe('ChatService', () => {
+  let service: ChatService;
 
   beforeEach(async () => {
     initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
 
     // const module: TestingModule = await Test.createTestingModule({
-    //   controllers: [TestOrmController],
+    //   imports: [DatabaseModule, TestOrmModule, ChatModule],
+    //   providers: [ChatService, Logger],
     // }).compile();
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    controller = module.get<TestOrmController>(TestOrmController);
+    service = module.get<ChatService>(ChatService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });
