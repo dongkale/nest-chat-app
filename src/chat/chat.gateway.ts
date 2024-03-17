@@ -13,7 +13,9 @@ import { Server } from 'socket.io';
 
 import { AddMessageDto } from './dto/add-message.dto';
 
-@WebSocketGateway(3030)
+// @WebSocketGateway(3030, { cors: { origin: '*' }, transports: ['websocket']})
+// @WebSocketGateway(3030, { cors: { origin: '*' }, transports: ['websocket'] })
+@WebSocketGateway()
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

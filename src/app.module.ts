@@ -18,12 +18,15 @@ import { ChatModule } from './chat/chat.module';
 // import { Chat } from './chat/chat.entity';
 import { DatabaseModule } from './common_modules/database.module';
 
+import config from './configs/config';
+
 dotenv.config();
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [config],
       envFilePath: `.env`,
     }),
     // TypeOrmModule.forRoot({

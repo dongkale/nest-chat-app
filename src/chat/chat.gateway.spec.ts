@@ -34,7 +34,7 @@ describe('ChatGateway', () => {
       transports: ['websocket', 'polling'],
     });
 
-    app.listen(3000);
+    app.listen(3010);
   });
 
   afterEach(async () => {
@@ -54,7 +54,24 @@ describe('ChatGateway', () => {
       });
       ioClient.on('pong', (data) => {
         expect(data).toBe('Hello world!');
-        console.log(`=== ${data}`);
+        console.log(`recv: ${data}`);
+        resolve();
+      });
+    });
+    ioClient.disconnect();
+  });
+
+  it('should emit "chat message"', async () => {
+    ioClient.connect();
+    ioClient.emit('chat', 'hi message...');
+    await new Promise<void>((resolve) => {
+      ioClient.on('connect', () => {
+        console.log('connected');
+      });
+
+      ioClient.on('chat', (data) => {
+        expect(data).toBe('hi message...');
+        console.log(`recv: ${data}`);
         resolve();
       });
     });
