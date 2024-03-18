@@ -2,11 +2,11 @@ import { Test } from '@nestjs/testing';
 import { ChatGateway } from './chat.gateway';
 import { INestApplication } from '@nestjs/common';
 import { Socket, io } from 'socket.io-client';
-import { AppModule } from '../app.module';
-import {
-  initializeTransactionalContext,
-  StorageDriver,
-} from 'typeorm-transactional';
+// import { AppModule } from '../app.module';
+// import {
+//   initializeTransactionalContext,
+//   StorageDriver,
+// } from 'typeorm-transactional';
 
 async function createNestApp(...gateways: any): Promise<INestApplication> {
   // initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });

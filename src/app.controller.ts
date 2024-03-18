@@ -40,6 +40,8 @@ export class AppController {
     this.logger.debug('Calling getTest()');
     this.logger.warn('Calling getTest()');
 
+    this.logger.log(`=== ${this.configService.get('LogLevel')}`);
+
     try {
       throw new Error();
     } catch (e) {

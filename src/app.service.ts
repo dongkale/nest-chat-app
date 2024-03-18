@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm'; // entity에 query날리는건 repository임.
 // import { AppDB } from './appDB.entity';
@@ -9,7 +10,7 @@ export class AppService {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   // @InjectRepository(AppDB) private appDBRepository: Repository<AppDB>,
-  constructor() {}
+  constructor(private readonly configService: ConfigService) {}
 
   // findAll(): Promise<AppDB[]> {
   //   return this.appDBRepository.find();
