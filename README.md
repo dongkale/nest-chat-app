@@ -43,6 +43,9 @@ npm i --save @nestjs/typeorm typeorm mysql2
 
 npm i --save @nestjs/cli
 
+npm i nestjs-websocket
+https://github.com/blockcoders/nestjs-websocket
+
 # transaction
 npm install --save typeorm-transactional
 ## Needed dependencies
@@ -66,4 +69,6 @@ https://gist.github.com/transitive-bullshit/39a7edc77c422cbf8a18
 https://docs.nestjs.com/controllers
 
 https://github.com/gorilla/websocket/blob/main/examples/echo/client.go
+
+https://lts0606.tistory.com/677
 ```

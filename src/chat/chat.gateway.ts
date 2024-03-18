@@ -17,7 +17,7 @@ import { AddMessageDto } from './dto/add-message.dto';
 // @WebSocketGateway(3030, { cors: { origin: '*' }, transports: ['websocket'] })
 // @WebSocketGateway()
 @WebSocketGateway(3030, {
-  // path: '/ws',
+  path: '',
   // port: 3030,
   cors: true,
   origin: '*',

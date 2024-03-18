@@ -2,6 +2,7 @@ import { Module, Logger, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatGateway } from './chat/chat.gateway';
+import { WebsocketHandler } from './ws-chat/ws-chat.gateway';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 // import { DatabaseModule } from './modules/database.module';
@@ -70,7 +71,7 @@ dotenv.config();
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway, Logger],
+  providers: [AppService, ChatGateway, WebsocketHandler, Logger],
 })
 export class AppModule {
   // let's add a middleware on all routes
