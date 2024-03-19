@@ -88,7 +88,7 @@ export class WsChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
     }
   */
   @SubscribeMessage('ws-chat') //1. 정의한 키값이 존재한 메시지가 도착하면,
-  async handleMessageEvent(client, message: any): Promise<void> {
+  async handleMessageEvent(client: any, message: any): Promise<void> {
     try {
       this.logger.log(`Recv: ${JSON.stringify(client)}`);
 
