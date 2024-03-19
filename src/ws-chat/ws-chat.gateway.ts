@@ -33,6 +33,8 @@ export class WsChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.logger.log(`Client: ${findValue} connected`);
     this.logger.debug(`Number of connected clients: ${this.wsClients.length}`);
+
+    this.logger.log(`Connect: ${JSON.stringify(client)}`);
   }
 
   async handleDisconnect(client: any) {
@@ -74,6 +76,8 @@ export class WsChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
   */
   @SubscribeMessage('ws-chat') //1. 정의한 키값이 존재한 메시지가 도착하면,
   async handleMessageEvent(client, message: any): Promise<void> {
+    this.logger.log(`Recv: ${JSON.stringify(client)}`);
+
     const findValue = this.wsClients.findIndex((item) => item === client);
     this.logger.log(`Message received from client: ${findValue}`);
 
