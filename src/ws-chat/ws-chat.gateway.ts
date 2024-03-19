@@ -23,45 +23,58 @@ export class WsChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleConnection(client: any, ...args: any[]) {
-    this.wsClients.push(client);
+    try {
+      this.wsClients.push(client);
 
-    for (const item of args) {
-      console.log(item?.url);
+      for (const item of args) {
+        console.log(item?.url);
+      }
+
+      const findValue = this.wsClients.findIndex((item) => item === client);
+
+      this.logger.log(`Client: ${findValue} connected`);
+      this.logger.debug(
+        `Number of connected clients: ${this.wsClients.length}`,
+      );
+
+      this.logger.log(`Connect: ${JSON.stringify(client)}`);
+    } catch (e) {
+      this.logger.error(`Exception: ${e}`);
     }
-
-    const findValue = this.wsClients.findIndex((item) => item === client);
-
-    this.logger.log(`Client: ${findValue} connected`);
-    this.logger.debug(`Number of connected clients: ${this.wsClients.length}`);
-
-    this.logger.log(`Connect: ${JSON.stringify(client)}`);
   }
 
   async handleDisconnect(client: any) {
-    // this.logger.log(`Cliend id:${client} disconnected`);
+    try {
+      // this.logger.log(`Cliend id:${client} disconnected`);
 
-    // for (let i = 0; i < this.wsClients.length; i++) {
-    //   if (this.wsClients[i] === client) {
-    //     this.wsClients.splice(i, 1);
-    //     break;
-    //   }
-    // }
+      // for (let i = 0; i < this.wsClients.length; i++) {
+      //   if (this.wsClients[i] === client) {
+      //     this.wsClients.splice(i, 1);
+      //     break;
+      //   }
+      // }
 
-    const findValue = this.wsClients.findIndex((item) => item === client);
-    if (findValue > -1) {
-      this.wsClients.splice(findValue, 1);
+      const findValue = this.wsClients.findIndex((item) => item === client);
+      if (findValue > -1) {
+        this.wsClients.splice(findValue, 1);
+      }
+
+      this.logger.log(`Client: ${findValue} disconnected`);
+      this.logger.debug(
+        `Number of connected clients: ${this.wsClients.length}`,
+      );
+    } catch (e) {
+      this.logger.error(`Exception: ${e}`);
     }
-
-    this.logger.log(`Client: ${findValue} disconnected`);
-    this.logger.debug(`Number of connected clients: ${this.wsClients.length}`);
   }
 
   @SubscribeMessage('ping')
-  async handlePingPong(client: any, data: any) {
-    this.logger.log(`Message received from client id: ${client.id}`);
-    this.logger.debug(`Payload: ${data}`);
+  async handlePingPong(client: any, message: any) {
+    // this.logger.log(`Message received from client id: ${client.id}`);
+    // this.logger.debug(`Payload: ${data}`);
 
-    client.send(JSON.stringify({ result: 'succ', ...data }));
+    client.send(message);
+    // client.send(JSON.stringify({ result: 'succ', ...data }));
     // return {
     //   event: 'pong',
     //   data,
@@ -76,15 +89,19 @@ export class WsChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
   */
   @SubscribeMessage('ws-chat') //1. 정의한 키값이 존재한 메시지가 도착하면,
   async handleMessageEvent(client, message: any): Promise<void> {
-    this.logger.log(`Recv: ${JSON.stringify(client)}`);
+    try {
+      this.logger.log(`Recv: ${JSON.stringify(client)}`);
 
-    const findValue = this.wsClients.findIndex((item) => item === client);
-    this.logger.log(`Message received from client: ${findValue}`);
+      const findValue = this.wsClients.findIndex((item) => item === client);
+      this.logger.log(`Message received from client: ${findValue}`);
 
-    for (const item of this.wsClients) {
-      //2. 배열에서 클라이언트 객체를 가져와 정의한 행동을 합니다.
-      //item.send(JSON.stringify({ result: 'succ', ...message }));
-      item.send(message);
+      for (const item of this.wsClients) {
+        //2. 배열에서 클라이언트 객체를 가져와 정의한 행동을 합니다.
+        //item.send(JSON.stringify({ result: 'succ', ...message }));
+        item.send(message);
+      }
+    } catch (e) {
+      this.logger.error(`Exception: ${e}`);
     }
   }
 }
