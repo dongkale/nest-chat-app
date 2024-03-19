@@ -71,4 +71,6 @@ https://docs.nestjs.com/controllers
 https://github.com/gorilla/websocket/blob/main/examples/echo/client.go
 
 https://lts0606.tistory.com/677
+
+https://dev.to/jfrancai/demystifying-nestjs-websocket-gateways-a-step-by-step-guide-to-effective-testing-1a1f
 ```
