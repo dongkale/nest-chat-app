@@ -1,4 +1,4 @@
 export class UserDto {
   index: number;
-  data: any;
+  client: any;
 }

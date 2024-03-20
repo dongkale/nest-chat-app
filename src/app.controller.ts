@@ -24,6 +24,12 @@ export class AppController {
   getHello(): string {
     this.logger.log('Calling getHello()');
 
+    // let client = undefined;
+
+    // // client.push('aaa');
+
+    // this.logger.log(`Connect: ${JSON.stringify(client[0])}`);
+
     return this.appService.getHello();
   }
 

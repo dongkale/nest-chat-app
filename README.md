@@ -71,4 +71,12 @@ https://docs.nestjs.com/controllers
 https://github.com/gorilla/websocket/blob/main/examples/echo/client.go
 
 https://lts0606.tistory.com/677
+
+# nesjs websocket platform-ws
+https://github.com/nestjs/nest/tree/master/sample/16-gateways-ws
+
+# nesjs websocket platform-ws
+https://snyk.io/advisor/npm-package/@nestjs/platform-ws/example
+
+https://codesandbox.io/examples/package/@nestjs/platform-ws
 ```
