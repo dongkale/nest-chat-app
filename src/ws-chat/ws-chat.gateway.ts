@@ -155,8 +155,8 @@ export class WsChatGateWay
   }
 
   @SubscribeMessage('ping')
-  handlePing(@MessageBody() data: number): WsResponse<boolean> {
-    return { event: 'pong', data: !!(data % 2) };
+  handlePingEvent(client: any, message: any): Promise<void> {
+    return client.send(message);
   }
 
   // ---
