@@ -73,4 +73,17 @@ https://github.com/gorilla/websocket/blob/main/examples/echo/client.go
 https://lts0606.tistory.com/677
 
 https://dev.to/jfrancai/demystifying-nestjs-websocket-gateways-a-step-by-step-guide-to-effective-testing-1a1f
+
+# nesjs websocket platform-ws
+https://github.com/nestjs/nest/tree/master/sample/16-gateways-ws
+
+# nesjs websocket platform-ws
+https://snyk.io/advisor/npm-package/@nestjs/platform-ws/example
+
+https://codesandbox.io/examples/package/@nestjs/platform-ws
+
+# nesjs websocket platform-ws test
+https://github.com/nestjs/nest/blob/master/integration/websockets/e2e/ws-gateway.spec.ts
+
+# nestjs platform-ws jest example
 ```
