@@ -71,7 +71,7 @@ describe('ChatGateway', () => {
 
       ioClient.on('chat', (data) => {
         expect(data).toBe('hi message...');
-        console.log(`recv: ${data}`);
+        console.log(`recv: ${JSON.stringify(data)}`);
         resolve();
       });
     });

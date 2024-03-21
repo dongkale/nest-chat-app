@@ -20,18 +20,16 @@ async function createNestApp(...gateways: any): Promise<INestApplication> {
 }
 
 describe('WsChatGateway (WsAdapter)', () => {
-  let gateway: WsChatGateWay;
+  // let gateway: WsChatGateWay;
   let app: INestApplication;
   let ws;
   // let ioClient: Socket;
 
   beforeEach(async () => {
     app = await createNestApp(WsChatGateWay);
-    gateway = app.get<WsChatGateWay>(WsChatGateWay);
+    // gateway = app.get<WsChatGateWay>(WsChatGateWay);
 
     // ws = new WebSocket('ws://localhost:3031');
-
-    // await new Promise(resolve => ws.on('open', resolve));
 
     app.listen(3011);
   });
@@ -40,23 +38,80 @@ describe('WsChatGateway (WsAdapter)', () => {
     await app.close();
   });
 
-  it('should be defined', () => {
-    expect(gateway).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(gateway).toBeDefined();
+  // });
 
-  it(`should handle message (2nd port)`, async () => {
+  it('should emit "ping"', async () => {
     ws = new WebSocket('ws://localhost:3031');
 
-    await new Promise((resolve) => ws.on('open', resolve));
+    const testString = 'Hello world!';
+
+    await new Promise<void>((resolve) =>
+      ws.on('open', () => {
+        console.log('connected(ws)');
+        resolve();
+      }),
+    );
+
+    ws.on('close', () => {
+      console.log('disconnected(ws)');
+    });
+
+    ws.on('message', (data) => {
+      console.log(data);
+      console.log(JSON.parse(JSON.stringify(data)));
+      console.log(`recv: ${data}`);
+
+      // const __str = new TextDecoder().decode(data);
+      // console.log(`=== ${JSON.parse(JSON.stringify(__str))}`);
+
+      // data ==> ArrayBuffer 형으로 decode가 필요함;
+      // expect(new TextDecoder().decode(data)).toEqual(testString);
+      expect(new TextDecoder().decode(data)).toBe(testString);
+
+      ws.close();
+    });
 
     ws.send(
       JSON.stringify({
-        event: 'ws-chat',
-        data: {
-          test: 'test',
-        },
+        event: 'ping',
+        data: testString,
       }),
     );
+
+    // await new Promise<void>((resolve) =>
+    //   ws.on('open', () => {
+    //     console.log('connected(ws)');
+
+    //     ws.on('close', () => {
+    //       console.log('disconnected(ws)');
+    //     });
+
+    //     ws.on('message', (data) => {
+    //       console.log(`recv: ${data}`);
+    //       expect(new TextDecoder().decode(data)).toBe(testString);
+    //       ws.close();
+    //     });
+
+    //     ws.send(
+    //       JSON.stringify({
+    //         event: 'ws-chat',
+    //         data: testString,
+    //       }),
+    //     );
+    //     resolve();
+    //   }),
+    // );
+
+    // await new Promise<void>((resolve) =>
+    //   ws.on('message', (data) => {
+    //     console.log(`recv: ${JSON.stringify(data)}`);
+    //     expect(data).toBe('test');
+    //     ws.close();
+    //     resolve();
+    //   }),
+    // );
   });
 
   // it('should emit "pong" on "ping"', async () => {
