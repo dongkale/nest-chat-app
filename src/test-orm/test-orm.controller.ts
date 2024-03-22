@@ -33,7 +33,7 @@ export class TestOrmController {
   }
 
   @Delete()
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: number) {
     return this.testOrmService.remove(id);
   }
 

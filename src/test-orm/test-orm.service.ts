@@ -1,40 +1,85 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestOrm } from './test-orm.entity';
-import { Chat } from '../chat/chat.entity';
-import { Repository } from 'typeorm';
+// import { Chat } from '../chat/chat.entity';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
-import { ChatService } from '../chat/chat.service';
-// import { AppDB } from '../appDB.entity';
+// import { ChatService } from '../chat/chat.service';
+import { CreateTestOrmDto } from './dto/create-test-orm.dto';
 
 @Injectable()
 export class TestOrmService {
+  private static readonly logger = new Logger(TestOrmService.name);
+
   constructor(
     @InjectRepository(TestOrm)
-    private testOrmRepository: Repository<TestOrm>,
-    @InjectRepository(Chat)
-    private chatRepository: Repository<Chat>,
-    private chatService: ChatService,
+    private readonly testOrmRepository: Repository<TestOrm>, // @InjectRepository(Chat) // private chatRepository: Repository<Chat>, // private chatService: ChatService,
   ) {}
 
-  findAll(): Promise<TestOrm[]> {
-    return this.testOrmRepository.find();
+  async create(createTestormDto: CreateTestOrmDto): Promise<TestOrm> {
+    // return this.testOrmRepository.save(testOrm);
+    try {
+      const testOrm = new TestOrm();
+      testOrm.name = createTestormDto.name;
+      testOrm.version = createTestormDto.version;
+
+      const result = await this.testOrmRepository.save(testOrm);
+      TestOrmService.logger.debug(result);
+      return result;
+    } catch (error) {
+      TestOrmService.logger.debug(error);
+      throw error;
+    }
   }
 
-  findOne(id: number): Promise<TestOrm> {
-    return this.testOrmRepository
-      .find({
-        where: [{ id: id }],
-      })
-      .then((result) => result[0]);
+  async findAll(): Promise<TestOrm[]> {
+    // return this.testOrmRepository.find();
+
+    try {
+      const posts = await this.testOrmRepository.find();
+      TestOrmService.logger.debug(posts);
+      return posts;
+    } catch (error) {
+      TestOrmService.logger.debug(error);
+      throw error;
+    }
   }
 
-  async create(testOrm: TestOrm): Promise<TestOrm> {
-    return this.testOrmRepository.save(testOrm);
+  async findOne(id: number): Promise<TestOrm> {
+    // return this.testOrmRepository.findOneBy({ id: id });
+
+    // return this.testOrmRepository
+    //   .find({
+    //     where: [{ id: id }],
+    //   })
+    //   .then((result) => result[0]);
+
+    try {
+      const find = await this.testOrmRepository.findOneBy({ id: id });
+      TestOrmService.logger.debug(find);
+      return find;
+    } catch (error) {
+      TestOrmService.logger.debug(error);
+      throw error;
+    }
   }
 
-  async remove(id: number): Promise<void> {
-    await this.testOrmRepository.delete(id);
+  async remove(id: number) {
+    // await this.testOrmRepository.delete(id);
+    try {
+      const post = await this.testOrmRepository.findOneBy({ id: id });
+      if (!post) {
+        throw new EntityNotFoundError(TestOrm, id);
+      }
+      TestOrmService.logger.debug(post);
+      const result = await this.testOrmRepository.softDelete({
+        id,
+      });
+      return result;
+    } catch (error) {
+      TestOrmService.logger.debug(error);
+      throw error;
+    }
   }
 
   //   async update(id: number, testOrm: TestOrm): Promise<TestOrm> {
@@ -46,27 +91,31 @@ export class TestOrmService {
   //       .then((result) => result[0]);
   //   }
 
-  async update(id: number, testOrm: TestOrm): Promise<void> {
-    const existedTestOrm = await this.testOrmRepository
-      .find({
-        where: [{ id: id }],
-      })
-      .then((result) => result[0]);
+  async update(id: number, updateTestOrm: TestOrm) {
+    // const existedTestOrm = await this.testOrmRepository
+    //   .find({
+    //     where: [{ id: id }],
+    //   })
+    //   .then((result) => result[0]);
 
-    if (existedTestOrm) {
-      await this.testOrmRepository.update(id, testOrm);
-      //   await getConnection()
-      //     .createQueryBuilder()
-      //     .update(TestOrm)
-      //     .set({
-      //       id: testOrm.id,
-      //       name: testOrm.name,
-      //       version: testOrm.version,
-      //     })
-      //     .where('id = :id', { id: id })
-      //     .execute();
+    // if (existedTestOrm) {
+    //   await this.testOrmRepository.update(id, testOrm);
+    // }
 
-      //
+    try {
+      const find = await this.testOrmRepository.findOneBy({ id: id });
+      if (!find) {
+        throw new EntityNotFoundError(TestOrm, id);
+      }
+      TestOrmService.logger.debug(find);
+      const result = await this.testOrmRepository.save({
+        ...find,
+        ...updateTestOrm,
+      });
+      return result; // Return the updated result object
+    } catch (error) {
+      TestOrmService.logger.debug(error);
+      throw error;
     }
   }
 
@@ -92,9 +141,9 @@ export class TestOrmService {
 
     throw new Error();
 
-    await this.chatRepository.query(
-      `UPDATE chat SET message = '+++' WHERE id=1`,
-    );
+    // await this.chatRepository.query(
+    //   `UPDATE chat SET message = '+++' WHERE id=1`,
+    // );
 
     return s[1];
   }

@@ -85,5 +85,15 @@ https://codesandbox.io/examples/package/@nestjs/platform-ws
 # nesjs websocket platform-ws test
 https://github.com/nestjs/nest/blob/master/integration/websockets/e2e/ws-gateway.spec.ts
 
-# nestjs platform-ws jest example
+# nestjs example
+https://github.com/nestjs/nest/tree/master/sample
+
+# nestjs schedule
+https://docs.nestjs.com/techniques/task-scheduling#dynamic-schedule-module-api
+
+npm install --save @nestjs/schedule
+
+# nestjs typeorm test(jest)
+https://velog.io/@1yongs_/NestJS-Testing-Jest
+https://dailybook-with.tistory.com/entry/Nestjs-%EC%9D%98-%EC%9C%A0%EB%8B%9B-%ED%85%8C%EC%8A%A4%ED%8A%B8Unit-test
 ```

@@ -14,6 +14,7 @@ import { Server, Socket } from 'ws';
 // import { Client } from '@nestjs/platform-ws';
 
 import { WsChatService } from './ws-chat.service';
+import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 
 @WebSocketGateway(3031, {
   cors: {
@@ -33,7 +34,10 @@ export class WsChatGateWay
   @WebSocketServer()
   private server: Server;
 
-  constructor(private wsSocketService: WsChatService) {}
+  constructor(
+    private wsSocketService: WsChatService,
+    private schedulerRegistry: SchedulerRegistry,
+  ) {}
 
   afterInit(server: Server) {
     this.clients = [];
@@ -165,6 +169,21 @@ export class WsChatGateWay
     //   }),
     // );
     return client.send(message);
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES, {
+    name: 'keepalive',
+  })
+  async keepalive(): Promise<void> {
+    const keepaliveString = 'keepalive';
+    try {
+      for (const item of this.clients) {
+        item.send(keepaliveString);
+        this.logger.log(`Client[${item.id}] KeepAlive: [${keepaliveString}]`);
+      }
+    } catch (e) {
+      this.logger.error(`Exception: ${e}`);
+    }
   }
 
   // ---

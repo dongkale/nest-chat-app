@@ -21,15 +21,14 @@ async function createNestApp(...gateways: any): Promise<INestApplication> {
 
 describe('WsChatGateway (WsAdapter)', () => {
   // let gateway: WsChatGateWay;
+  const websocketUrl = 'ws://localhost:3031';
+
   let app: INestApplication;
   let ws;
-  // let ioClient: Socket;
 
   beforeEach(async () => {
     app = await createNestApp(WsChatGateWay);
     // gateway = app.get<WsChatGateWay>(WsChatGateWay);
-
-    // ws = new WebSocket('ws://localhost:3031');
 
     app.listen(3011);
   });
@@ -43,9 +42,10 @@ describe('WsChatGateway (WsAdapter)', () => {
   // });
 
   it('should emit "ping"', async () => {
-    ws = new WebSocket('ws://localhost:3031');
+    ws = new WebSocket(websocketUrl);
 
     const testString = 'Hello world!';
+    const testEvent = 'ping';
 
     await new Promise<void>((resolve) =>
       ws.on('open', () => {
@@ -75,34 +75,44 @@ describe('WsChatGateway (WsAdapter)', () => {
 
     ws.send(
       JSON.stringify({
-        event: 'ping',
+        event: testEvent,
         data: testString,
       }),
     );
+  });
 
-    // await new Promise<void>((resolve) =>
-    //   ws.on('open', () => {
-    //     console.log('connected(ws)');
+  it('should emit "ping2"', async () => {
+    ws = new WebSocket(websocketUrl);
 
-    //     ws.on('close', () => {
-    //       console.log('disconnected(ws)');
-    //     });
+    const testString = 'Hello world!';
+    const testEvent = 'ping';
 
-    //     ws.on('message', (data) => {
-    //       console.log(`recv: ${data}`);
-    //       expect(new TextDecoder().decode(data)).toBe(testString);
-    //       ws.close();
-    //     });
+    await new Promise<void>((resolve) =>
+      ws.on('open', () => {
+        console.log('connected(ws)');
 
-    //     ws.send(
-    //       JSON.stringify({
-    //         event: 'ws-chat',
-    //         data: testString,
-    //       }),
-    //     );
-    //     resolve();
-    //   }),
-    // );
+        ws.on('close', () => {
+          console.log('disconnected(ws)');
+        });
+
+        ws.on('message', (data) => {
+          console.log(data);
+          console.log(JSON.parse(JSON.stringify(data)));
+          console.log(`recv: ${data}`);
+
+          expect(new TextDecoder().decode(data)).toBe(testString);
+          ws.close();
+        });
+
+        ws.send(
+          JSON.stringify({
+            event: testEvent,
+            data: testString,
+          }),
+        );
+        resolve();
+      }),
+    );
 
     // await new Promise<void>((resolve) =>
     //   ws.on('message', (data) => {

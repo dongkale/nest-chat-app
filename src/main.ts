@@ -75,5 +75,7 @@ async function bootstrap() {
   app.useWebSocketAdapter(new WsAdapter(app)); //Nestjs에게 어떠한 웹소켓 기능을 쓸지 적용!
 
   await app.listen(3000);
+
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

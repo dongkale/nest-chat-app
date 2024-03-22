@@ -21,6 +21,9 @@ import { DatabaseModule } from './common_modules/database.module';
 // import { WsChatService } from './ws-chat/ws-chat.service';
 import { WsChatModule } from './ws-chat/ws-chat.module';
 
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './tasks/tasks.module';
+
 import config from './configs/config';
 
 dotenv.config();
@@ -68,10 +71,13 @@ dotenv.config();
     //   inject: [ConfigService],
     // }),
     // TypeOrmModule.forFeature([AppDB, TestOrm]),
+    ScheduleModule.forRoot(),
+    TasksModule,
     DatabaseModule,
     TestOrmModule,
     ChatModule,
     WsChatModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger],
