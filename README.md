@@ -97,3 +97,6 @@ npm install --save @nestjs/schedule
 https://velog.io/@1yongs_/NestJS-Testing-Jest
 https://dailybook-with.tistory.com/entry/Nestjs-%EC%9D%98-%EC%9C%A0%EB%8B%9B-%ED%85%8C%EC%8A%A4%ED%8A%B8Unit-test
 ```
+
+npm i @nestjs/config @nestjs/mapped-types @nestjs/typeorm typeorm mysql2 joi
+npm i class-validator class-transformer

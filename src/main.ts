@@ -11,6 +11,7 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 import { WsAdapter } from '@nestjs/platform-ws'; //여기!!
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule, {
@@ -71,6 +72,14 @@ async function bootstrap() {
     cors: true,
     logger: winstonLogger('MyApp'),
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   app.useWebSocketAdapter(new WsAdapter(app)); //Nestjs에게 어떠한 웹소켓 기능을 쓸지 적용!
 

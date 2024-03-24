@@ -15,15 +15,19 @@ export class TestOrmService {
     @InjectRepository(TestOrm)
     private readonly testOrmRepository: Repository<TestOrm>, // @InjectRepository(Chat) // private chatRepository: Repository<Chat>, // private chatService: ChatService,
   ) {}
-
+  
   async create(createTestormDto: CreateTestOrmDto): Promise<TestOrm> {
-    // return this.testOrmRepository.save(testOrm);
+    // console.log('createTestormDto', createTestormDto);
+    // const result = await this.testOrmRepository.save(createTestormDto);
+    // console.log('===', result);
+    // return result;
+    // return this.testOrmRepository.save(createTestormDto);
     try {
-      const testOrm = new TestOrm();
-      testOrm.name = createTestormDto.name;
-      testOrm.version = createTestormDto.version;
-
-      const result = await this.testOrmRepository.save(testOrm);
+      // const testOrm = new TestOrm();
+      // testOrm.id = 0;
+      // testOrm.name = createTestormDto.name;
+      // testOrm.version = createTestormDto.version;
+      const result = await this.testOrmRepository.save(createTestormDto);
       TestOrmService.logger.debug(result);
       return result;
     } catch (error) {

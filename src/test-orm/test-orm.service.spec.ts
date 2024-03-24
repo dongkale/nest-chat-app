@@ -14,22 +14,6 @@ import {
   StorageDriver,
 } from 'typeorm-transactional';
 
-const testOrmArray = [
-  {
-    name: 'name #1',
-    version: 'version #1',
-  },
-  {
-    name: 'name #2',
-    version: 'version #2',
-  },
-];
-
-const oneTestOrm = {
-  name: 'name #1',
-  version: 'version #1',
-};
-
 const mockPostRepository = () => ({
   save: jest.fn(),
   find: jest.fn(),
@@ -37,6 +21,14 @@ const mockPostRepository = () => ({
   remove: jest.fn(),
   delete: jest.fn(),
 });
+
+// class MockRepository {
+//   async findOne(id) {
+//     const user: TestOrm = new TestOrm();
+//     user.id = id;
+//     return user;
+//   }
+// }
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
@@ -46,11 +38,26 @@ describe('PostService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      // imports: [AppModule],
+      // imports: [
+      //   TypeOrmModule.forRoot({
+      //     type: 'mysql',
+      //     host: '52.79.52.203',
+      //     port: 3306,
+      //     username: 'lennon',
+      //     password: 'lennon0108!',
+      //     database: 'test',
+      //     entities: [TestOrm],
+      //     synchronize:
+      //       true /* synchronize: true는 운영에서는 사용하지 마세요. */,
+      //   }),
+      // ],
       providers: [
         TestOrmService,
         {
           provide: getRepositoryToken(TestOrm),
           useValue: mockPostRepository(),
+          // useClass: MockRepository,
         },
       ],
     }).compile();
@@ -65,9 +72,60 @@ describe('PostService', () => {
     expect(service).toBeDefined();
   });
 
+  // describe('create()', () => {
+  //   it.todo('should fail on exception');
+  //   it.todo('should create Posts');
+  // });
+
   describe('create()', () => {
-    it.todo('should fail on exception');
-    it.todo('should create Posts');
+    const createArgs = {
+      name: 'name_11',
+      version: 'version_11',
+    };
+
+    // const testOrm: TestOrm = {
+    //   id: 0,
+    //   name: 'name_11',
+    //   version: 'version_11',
+    // };
+
+    it('should fail on exception', async () => {
+      // postRepository.save() error 발생
+      repository.save.mockRejectedValue('save error'); // 실패할꺼라고 가정한다.
+
+      const result = await service.create(createArgs);
+      // console.log('result:', result);
+      expect(result).toEqual('save error'); // 진짜 에러 발생했넴
+
+      // expect(result).resolves.toEqual(testOrm);
+    });
+
+    it('should create Posts', async () => {
+      repository.save.mockResolvedValue(createArgs); // 성공할꺼라고 가정한다.
+      const result = await service.create(createArgs); //
+
+      expect(repository.save).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(repository.save).toHaveBeenCalledWith(createArgs); // 매개변수로 createArgs가 주어졌니?
+
+      expect(result).toEqual(createArgs); // 이 create() method의 결과가 `createArgs`와 똑같니?
+    });
+  });
+
+  describe('findAll()', () => {
+    it('should be find All', async () => {
+      repository.find.mockResolvedValue([]);
+
+      const result = await service.findAll();
+
+      expect(repository.find).toHaveBeenCalledTimes(1);
+
+      expect(result).toEqual([]);
+    });
+    it('should fail on exception', async () => {
+      repository.find.mockRejectedValue('find error');
+      const result = await service.findAll();
+      expect(result).toEqual('find error');
+    });
   });
 });
 
