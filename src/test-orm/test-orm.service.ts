@@ -1,11 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestOrm } from './test-orm.entity';
-// import { Chat } from '../chat/chat.entity';
+import { Chat } from '../chat/chat.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 // import { ChatService } from '../chat/chat.service';
 import { CreateTestOrmDto } from './dto/create-test-orm.dto';
+import { UpdateTestOrmDto } from './dto/update-test-orm.dto';
 
 @Injectable()
 export class TestOrmService {
@@ -13,14 +18,12 @@ export class TestOrmService {
 
   constructor(
     @InjectRepository(TestOrm)
-    private readonly testOrmRepository: Repository<TestOrm>, // @InjectRepository(Chat) // private chatRepository: Repository<Chat>, // private chatService: ChatService,
+    private readonly testOrmRepository: Repository<TestOrm>,
+    @InjectRepository(Chat)
+    private chatRepository: Repository<Chat>, // private chatService: ChatService,
   ) {}
-  
+
   async create(createTestormDto: CreateTestOrmDto): Promise<TestOrm> {
-    // console.log('createTestormDto', createTestormDto);
-    // const result = await this.testOrmRepository.save(createTestormDto);
-    // console.log('===', result);
-    // return result;
     // return this.testOrmRepository.save(createTestormDto);
     try {
       // const testOrm = new TestOrm();
@@ -95,7 +98,7 @@ export class TestOrmService {
   //       .then((result) => result[0]);
   //   }
 
-  async update(id: number, updateTestOrm: TestOrm) {
+  async update(id: number, updateTestOrm: UpdateTestOrmDto) {
     // const existedTestOrm = await this.testOrmRepository
     //   .find({
     //     where: [{ id: id }],
@@ -116,11 +119,23 @@ export class TestOrmService {
         ...find,
         ...updateTestOrm,
       });
-      return result; // Return the updated result object
+      return result;
     } catch (error) {
       TestOrmService.logger.debug(error);
       throw error;
     }
+  }
+
+  async findOneById(id: number): Promise<TestOrm> {
+    let testOrm: TestOrm = null;
+
+    // testOrm = await this.testOrmRepository.findOne(id);
+    // testOrm = await this.testOrmRepository.findOneBy({ id: id });
+    testOrm = await this.testOrmRepository.findOne({ where: { id: id } });
+    if (testOrm.id === 1) {
+      throw new InternalServerErrorException('정지 당한 유저입니다.');
+    }
+    return testOrm;
   }
 
   @Transactional()
@@ -145,9 +160,9 @@ export class TestOrmService {
 
     throw new Error();
 
-    // await this.chatRepository.query(
-    //   `UPDATE chat SET message = '+++' WHERE id=1`,
-    // );
+    await this.chatRepository.query(
+      `UPDATE chat SET message = '+++' WHERE id=1`,
+    );
 
     return s[1];
   }
