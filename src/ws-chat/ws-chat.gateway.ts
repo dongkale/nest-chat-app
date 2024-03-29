@@ -42,7 +42,13 @@ export class WsChatGateWay
   afterInit(server: Server) {
     this.clients = [];
     this.server = server;
+    // keepalive 설정
+    // this.schedulerRegistry.addCronJob('keepalive', this.keepalive);
+    // this.schedulerRegistry.startCronJob('keepalive');
     this.logger.log('websocket server start');
+
+    this.server._server.keepAlive = true;
+    this.logger.log(`Server: ${this.server._server.keepAliveTimeout}`);
 
     // server.on('ws-chat', (ws) => {
     //   this.logger.log(`Server: Connect ${JSON.stringify(ws, null, 2)}}`);
