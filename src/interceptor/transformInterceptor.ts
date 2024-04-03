@@ -26,9 +26,20 @@ export class TransformInterceptor<T>
     // const client: Client = context.switchToWs().getClient();
     // this.logger.log(`Interceptor: ${context.id}`);
 
+    const args = context.getArgs();
+    args[1] = `${args[1]} - Hello World`;
+
     const client = context.switchToWs().getClient();
     const recvData = context.switchToWs().getData();
+
     this.logger.log(`Client: ${client.id}, Data: ${recvData}`);
+
+    // context.switchToWs().getData().data = 'Hello World';
+
+    // 수신받은 데이터를 가공한다
+    // const data = recvData;
+    // return next.handle().pipe(map((data) => ({ data })));
+
 
     // throw new ForbiddenException();
     // return null;

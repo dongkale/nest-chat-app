@@ -137,7 +137,7 @@ export class WsChatGateWay
     this.clients[client.id] = client;
 
     this.logger.log(`Server: ${JSON.stringify(this.server, null, 2)}`);
-    this.logger.log(`Client: ${JSON.stringify(client, null, 2)}`);
+    // this.logger.log(`Client: ${JSON.stringify(client, null, 2)}`);
   }
 
   handleDisconnect(client: Socket) {
