@@ -26,6 +26,9 @@ import { TasksModule } from './tasks/tasks.module';
 
 import config from './configs/config';
 
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { RequestLoggerInterceptor } from './interceptor/request-logger.interceptor';
+
 dotenv.config();
 
 @Module({
@@ -80,7 +83,14 @@ dotenv.config();
     TasksModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Logger],
+  providers: [
+    AppService,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: RequestLoggerInterceptor,
+    // },
+    Logger,
+  ],
 })
 export class AppModule {
   // let's add a middleware on all routes

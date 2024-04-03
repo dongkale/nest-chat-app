@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UseInterceptors } from '@nestjs/common';
 import {
   MessageBody,
   WebSocketServer,
@@ -15,6 +15,7 @@ import { Server, Socket } from 'ws';
 
 import { WsChatService } from './ws-chat.service';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { TransformInterceptor } from '../interceptor/transformInterceptor';
 
 @WebSocketGateway(3031, {
   cors: {
@@ -28,7 +29,8 @@ export class WsChatGateWay
 {
   private readonly logger = new Logger(WsChatGateWay.name);
 
-  private clients: Socket[] = [];
+  private clients__: Socket[] = [];
+  private clients: Record<string, any> = {};
 
   // private wsClients: Array<any> = [];
   @WebSocketServer()
@@ -40,9 +42,10 @@ export class WsChatGateWay
   ) {}
 
   afterInit(server: Server) {
-    this.clients = [];
+    // this.clients = [];
     this.server = server;
     // keepalive 설정
+
     // this.schedulerRegistry.addCronJob('keepalive', this.keepalive);
     // this.schedulerRegistry.startCronJob('keepalive');
     this.logger.log('websocket server start');
@@ -111,22 +114,36 @@ export class WsChatGateWay
     // });
   }
 
+  __on_message(client: Socket, message: any) {
+    this.logger.log(`===: ${JSON.stringify(client)}, ${message}`);
+  }
+
   handleConnection(client: Socket) {
-    client.id = `id-${Date.now()}`;
+    const now = Date.now();
 
-    if (this.notHasClientId(this.clients, client.id)) {
-      this.clients.push(client);
-    }
+    client.id = `id-${now}`;
+    client.nickname = 'client-' + String(now);
 
+    // if (this.notHasClientId(this.clients__, client.id)) {
+    //   this.clients__.push(client);
+    // }
+
+    // client._socket.on('ws-chat', this.__on_message);
+    // client._socket.onmessage = this.__on_message;
     // client.on('ws-chat', (ws) => {
     //   this.logger.log(`ws-chat: ${JSON.stringify(ws, null, 2)}}`);
     // });
 
+    this.clients[client.id] = client;
+
     this.logger.log(`Server: ${JSON.stringify(this.server, null, 2)}`);
+    this.logger.log(`Client: ${JSON.stringify(client, null, 2)}`);
   }
 
   handleDisconnect(client: Socket) {
-    this.clients = this.removeById(this.clients, client.id);
+    // this.clients__ = this.removeById(this.clients__, client.id);
+
+    delete this.clients[client.id];
 
     this.logger.log(`Server: ${JSON.stringify(this.server, null, 2)}`);
   }
@@ -153,14 +170,37 @@ export class WsChatGateWay
     return true;
   }
 
+  @UseInterceptors(new TransformInterceptor())
   @SubscribeMessage('ws-chat')
   async handleMessageEvent(client: any, message: any): Promise<void> {
+    // try {
+    //   for (const item of this.clients__) {
+    //     //item.send(JSON.stringify({ result: 'succ', ...message }));
+    //     item.send(message);
+    //     this.logger.log(`Client[${item.id}]: [${message}]`);
+    //   }
+    // } catch (e) {
+    //   this.logger.error(`Exception: ${e}`);
+    // }
+
+    // --- broadcast
+
     try {
-      for (const item of this.clients) {
-        //item.send(JSON.stringify({ result: 'succ', ...message }));
-        item.send(message);
-        this.logger.log(`Client[${item.id}]: [${message}]`);
-      }
+      // for (const [key, value] of Object.entries(this.clients)) {
+      //   // value.send(
+      //   //   JSON.stringify({
+      //   //     event: 'ws-chat',
+      //   //     data: { nickname: client['nickname'], message: payload },
+      //   //   }),
+      //   // );
+      //   value.send(message);
+      //   this.logger.log(`Client[${key}:${value.nickname}]: [${message}]`);
+      // }
+
+      Object.entries(this.clients).forEach(([key, value]) => {
+        value.send(message);
+        this.logger.log(`Client[${key}:${value.nickname}]: [${message}]`);
+      });
     } catch (e) {
       this.logger.error(`Exception: ${e}`);
     }
@@ -183,14 +223,52 @@ export class WsChatGateWay
   async keepalive(): Promise<void> {
     const keepaliveString = 'keepalive';
     try {
-      for (const item of this.clients) {
-        item.send(keepaliveString);
-        this.logger.log(`Client[${item.id}] KeepAlive: [${keepaliveString}]`);
+      for (const [key, value] of Object.entries(this.clients)) {
+        value.send(keepaliveString);
+        this.logger.log(
+          `Client[${key}:${value.nickname}] KeepAlive [${keepaliveString}]`,
+        );
       }
     } catch (e) {
       this.logger.error(`Exception: ${e}`);
     }
   }
+
+  /*
+  @WebSocketGateway(5000)
+  export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    client: Record<string, any>;
+    constructor() {
+        this.client = {};
+    }
+    @WebSocketServer()
+    server: Server;
+
+    public handleConnection(client): void {
+        console.log('hi');
+        client['id'] = String(Number(new Date()));
+        client['nickname'] = '낯선남자' + String(Number(new Date()));
+        this.client[client['id']] = client;
+    }
+
+    public handleDisconnect(client): void {
+        console.log('bye', client['id']);
+        delete this.client[client['id']];
+    }
+
+    @SubscribeMessage('message')
+    handleMessage(client: any, payload: any): void {
+        for (const [key, value] of Object.entries(this.client)) {
+            value.send(
+                JSON.stringify({
+                    event: 'events',
+                    data: { nickname: client['nickname'], message: payload },
+                }),
+            );
+        }
+    }
+}
+*/
 
   // ---
 
