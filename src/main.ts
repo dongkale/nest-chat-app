@@ -12,6 +12,7 @@ import {
 } from 'typeorm-transactional';
 import { WsAdapter } from '@nestjs/platform-ws'; //여기!!
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'; // Import the HttpExceptionFilter class
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule, {
@@ -80,6 +81,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.useWebSocketAdapter(new WsAdapter(app)); //Nestjs에게 어떠한 웹소켓 기능을 쓸지 적용!
 

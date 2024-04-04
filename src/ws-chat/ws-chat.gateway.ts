@@ -123,6 +123,9 @@ export class WsChatGateWay
 
     client.id = `id-${now}`;
     client.nickname = 'client-' + String(now);
+    client.seqNo = 0;
+
+    // const clientIpAddress = client.upgradeReq.connection.remoteAddress;
 
     // if (this.notHasClientId(this.clients__, client.id)) {
     //   this.clients__.push(client);
