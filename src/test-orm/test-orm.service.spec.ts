@@ -63,7 +63,7 @@ describe('TestOrmService', () => {
         {
           provide: getRepositoryToken(TestOrm),
           useValue: mockTestOrmRepository(),
-          useClass: MockCustomRepository,
+          // useClass: MockCustomRepository,
         },
         ChatService,
         {
